@@ -1,4 +1,4 @@
-# Backend for The Editor
+# Backend for [editor-frontend](https://github.com/jupiterlander/texted-frontend)
 An express-backend-api for an assignment in the course jsramverk.se at [BTH](https://www.bth.se/) 
 
 ## How to install
