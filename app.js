@@ -35,4 +35,6 @@ app.use('/docs', update);
 
 
 // Start up server
-app.listen(port, () => console.log(`Express API is listening on port ${port}!`));
+const server = app.listen(port, () => console.log(`Express API is listening on port ${port}!`));
+
+module.exports = server;
