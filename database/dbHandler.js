@@ -1,8 +1,8 @@
-const { url, dbName, collectionName } = require(`./config`);
+const { url, dbName, collectionName } = require(`./config.${process.env.NODE_ENV}`);
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(url);
 
-
+console.log(url, dbName, collectionName);
 async function connect(collectionAction) {
     let result = null;
 
