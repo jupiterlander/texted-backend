@@ -1,3 +1,8 @@
 node_modules/
 
-/database/config.prod.js
+!/database/config.local.js
+!/database/config.js
+/database/config*.js
+
+.nyc_output
+coverage/

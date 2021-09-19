@@ -1,6 +1,9 @@
-const { url, dbName, collectionName } = require(process.env.NODE_ENV === 'production'? './config.prod': './config.local');
+// const { url, dbName, collectionName } = require(process.env.NODE_ENV === 'production'? './config.prod': './config.local');
+let { url, dbName, collectionName } = require(`./config.${process.env.NODE_ENV}`);
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(url);
+
+url = process.env.URL?? url;
 
 
 async function connect(collectionAction) {
@@ -40,6 +43,10 @@ async function last() {
     return await connect((collection) => collection.find({}).sort({_id:-1}).limit(1).toArray());
 }
 
+async function remove(data={}) {
+    return await connect((collection) => collection.deleteMany(data));
+}
+
 
 async function allDatabases() {
     // Use connect method to connect to the server
@@ -54,4 +61,4 @@ async function allDatabases() {
     }
 }
 
-module.exports = { all, store, retrieve, last, allDatabases, update }; 
+module.exports = { all, store, retrieve, last, allDatabases, update, remove }; 
