@@ -1,5 +1,7 @@
 # Backend for [editor-frontend](https://github.com/jupiterlander/texted-frontend)
-An express-backend-api for an assignment in the course jsramverk.se at [BTH](https://www.bth.se/) 
+An express-backend-api for an assignment in the course jsramverk.se at [BTH](https://www.bth.se/)
+
+[![Build Status](https://app.travis-ci.com/jupiterlander/texted-backend.svg?branch=main)](https://app.travis-ci.com/jupiterlander/texted-backend)
 
 ## How to install
 
