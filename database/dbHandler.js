@@ -1,9 +1,6 @@
-// const { url, dbName, collectionName } = require(process.env.NODE_ENV === 'production'? './config.prod': './config.local');
-let { url, dbName, collectionName } = require(`./config.${process.env.NODE_ENV}`);
+const { url, dbName, collectionName } = require(`./config`);
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(url);
-
-url = process.env.URL?? url;
 
 
 async function connect(collectionAction) {
