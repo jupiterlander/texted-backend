@@ -1,6 +1,7 @@
 node_modules/
 
 !/database/config.local.js
+!/database/config.test.js
 !/database/config.js
 /database/config*.js
 
