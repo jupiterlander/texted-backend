@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const database = require('../database/dbHandler');
 
-router.get('/all', async function(req, res, next) {
+router.get('/all', async function(req, res) {
     const result = await database.all();
 
     const data = {
         data: {
-            msg:result
+            msg: result
         }
     };
+
     res.json(data);
 });
 

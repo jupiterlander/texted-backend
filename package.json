@@ -7,7 +7,8 @@
     "start": "NODE_ENV=production node app.js",
     "dev-start": "NODE_ENV=local nodemon app.js",
     "test": "nyc --reporter=html --reporter=text --reporter=clover mocha --timeout 10000",
-    "clean": "rm -rf node_modules package-lock.json"
+    "clean": "rm -rf node_modules package-lock.json",
+    "eslint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,9 @@
   "devDependencies": {
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.25.3",
+    "javascript-style-guide": "^1.0.1",
     "mocha": "^9.1.1",
     "nyc": "^15.1.0"
   }

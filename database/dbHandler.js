@@ -37,7 +37,7 @@ async function retrieve(data) {
 }
 
 async function last() {
-    return await connect((collection) => collection.find({}).sort({_id:-1}).limit(1).toArray());
+    return await connect((collection) => collection.find({}).sort({_id: -1}).limit(1).toArray());
 }
 
 async function remove(data={}) {
@@ -58,4 +58,4 @@ async function allDatabases() {
     }
 }
 
-module.exports = { all, store, retrieve, last, allDatabases, update, remove }; 
+module.exports = { all, store, retrieve, last, allDatabases, update, remove };

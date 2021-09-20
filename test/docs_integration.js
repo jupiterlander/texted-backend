@@ -1,6 +1,7 @@
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
+const { before, describe, it } = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app.js');
 
@@ -48,7 +49,7 @@ describe('Docs', () => {
                     res.body.data.msg.should.be.an("object");
                     res.body.data.msg.acknowledged.should.equal(true);
                     res.body.data.msg.insertedId.should.be.an("string");
-                    
+
                     lastId = res.body.data.msg.insertedId;
                     done();
                 });
@@ -62,9 +63,9 @@ describe('Docs', () => {
             chai.request(server)
                 .put("/docs/update")
                 .send({
-                        _id: lastId,
-                        document: lastDocument
-                    }
+                    _id: lastId,
+                    document: lastDocument
+                }
                 )
                 .end((err, res) => {
                     res.should.have.status(200);
