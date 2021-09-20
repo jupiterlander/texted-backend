@@ -1,7 +1,9 @@
+
+/*eslint-env node, mocha */
+
 process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
-const { before, describe, it } = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app.js');
 
