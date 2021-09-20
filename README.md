@@ -9,31 +9,38 @@ An express-backend-api for an assignment in the course jsramverk.se at [BTH](htt
 $ git clone git@github.com:jupiterlander/texted-backend.git
 ```
 
-Copy config file for db and rename it to config.prod.js and 
-edit the local and production config files to fit the databases(or setup an mongodb locally and run in your local environment for developent)
+Edit the local and production config files to fit the databases(or setup an mongodb locally and run in your local environment for developent)
 ```
-$ cp config.local.js config.prod.js
-$ nano database/config.prod.js
+$ nano database/config.local.js
 ```
 ```
-const url = 'mongodb://localhost:27017';// <- edit
-const dbName = 'mumin';                 // <- edit
-const collectionName = 'crowd';         // <- edit
+const url = 'mongodb://localhost:27017';// <- use default or edit
+const dbName = 'texteditor';            // <- use default or edit
+const collectionName = 'documents';     // <- use default or edit
 
 module.exports = { url, dbName, collectionName };
 
 ```
 
+The config.production.js file and config.test.js files for the database uses the env-variables: `DB_USER` and `DB_SECRET`, 
+and they are set at Travis-CI for testing and at the mongodb atlas cloud for production.
+
 ## Start
-Start app with production config(will fallback to local config if no config.prod.js file exists)
+Start app with production config(be aware that you're working against your production database!):
 ```
 $ npm run start
 ```
-Or start(with nodemon) for local development
+Or start(with nodemon) for local development:
 ```
 $ npm run dev-start
 ```
 
+## Test
+Test is performed against a test database at the same location as the production DB, with 
+the tools: mocha, chai, istanbul. 
+```
+$ npm run test
+```
 
 
 ## Routing
