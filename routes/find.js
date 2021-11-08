@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../database/dbHandler');
-const ObjectId = require('mongodb').ObjectId;
+
 
 router.get('/find/:id', async function(req, res) {
-    const objectId = new ObjectId(req.params.id);
-    const result = await database.retrieve({ _id: objectId });
+    const result = await database.getDoc(req.user?.username, req.params.id);
 
-    console.log(result);
+    console.log("result: ", result);
+    const doc = result?.docs?.shift();
+    const status = doc? 200: 404;
 
     const data = {
-        data: {
-            msg: result
-        }
+        msg: '',
+        doc: doc
     };
 
-    res.json(data);
+    res.status(status).json(data);
 });
 
 module.exports = router;

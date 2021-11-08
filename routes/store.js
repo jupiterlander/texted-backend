@@ -3,7 +3,8 @@ const router = express.Router();
 const database = require('../database/dbHandler');
 
 router.post('/store', async function(req, res) {
-    const result = await database.store(req.body);
+    console.log(req.user.username, req.body);
+    const result = await database.insertDoc(req.user.username, req.body.document);
     const data = {
         data: {
             msg: result

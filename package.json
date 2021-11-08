@@ -13,10 +13,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "mongodb": "^4.1.1",
     "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
+    "passport": "^0.5.0",
+    "passport-github2": "^0.1.12",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "signal-exit": "^3.0.5",
     "socket.io": "^4.2.0"
   },
   "devDependencies": {

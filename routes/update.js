@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../database/dbHandler");
-const ObjectId = require('mongodb').ObjectId;
 
 router.put("/update", async function (req, res) {
-    const filter = {"_id": new ObjectId(req.body._id)};
-    const updateDoc = {$set: {document: req.body.document}};
-    const result = await database.update(filter, updateDoc);
+    console.log('req.body', req.body);
+    const result = await database.updateDoc(req.user.username, req.body.id, req.body.document);
     const data = {
         data: {
             msg: result,
