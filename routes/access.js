@@ -1,10 +1,5 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
-const database = require('../database/dbHandler');
-
-const userExist = async (username) => {
-    await database.userExist(username);
-};
 
 
 router.post("/access", async function (req, res) {
@@ -13,34 +8,45 @@ router.post("/access", async function (req, res) {
         result: {},
         access: [],
     };
-    // const user = await userExist(req.body.username);
 
-    if (! await userExist(req.body.username)) {
-        data.msg = `User ${req.body.username} doesn't exist!`;
-        res.status(404).json(data);
-    } else {
-        data.result = await database.storeAccess(
-            req.user.username,
-            req.body.id,
-            req.body.username,
-        );
 
-        if (data.result.modifiedCount) {
-            const result = await database.getAllUsernamesWithAccess(
-                req.user.username,
-                req.body.id,
-                req.body.username,
-            );
-
-            data.access = result[0].docs.access;
-        } else {
-            data.msg = "User has access!";
-        }
-
-        console.log("data to be sent:", data);
-
-        res.json(data);
+    if (req.body.username === req.user.username) {
+        data.msg = `User ${req.body.username} is the owner of the document!`;
+        return res.status(404).json(data);
     }
+
+    const user = await req.app.get('db').getUser(req.body.username);
+
+    if (!user) {
+        data.msg = `User ${req.body.username} doesn't exist!`;
+        return res.status(404).json(data);
+    }
+
+    data.result = await req.app.get('db').storeAccess(
+        req.user.username,
+        req.body.id,
+        req.body.username,
+    );
+
+    if (!data.result.matchedCount) {
+        data.msg = "No access to document!";
+        return res.status(404).json(data);
+    }
+
+    if (!data.result.modifiedCount) {
+        data.msg = "User has already access!";
+        return res.status(404).json(data);
+    }
+
+    const result = await req.app.get('db').getAllUsernamesWithAccess(
+        req.user.username,
+        req.body.id,
+        req.body.username,
+    );
+
+    data.msg = `User ${req.body.username} got access!`;
+    data.access = result[0].docs.access;
+    return res.status(201).json(data);
 });
 
 router.delete('/access', async function(req, res) {
@@ -49,30 +55,45 @@ router.delete('/access', async function(req, res) {
         result: null,
         access: null
     };
+    const userExist = await req.app.get('db').userExist(req.body.username);
 
-    data.result = await database.removeAccess(req.user.username, req.body.id, req.body.username);
-
-    if (data.result.modifiedCount) {
-        const result = await database.getAllUsernamesWithAccess(
-            req.user.username, req.body.id);
-
-        data.access = result[0].docs.access;
-    } else {
-        data.msg = "User has not access!";
+    if (!userExist) {
+        data.msg = `User ${req.body.username} not found!`;
+        return res.status(404).json(data);
     }
 
+    data.result = await req.app.get('db').removeAccess(
+        req.user.username, req.body.id, req.body.username);
+
+    if (!data.result.matchedCount) {
+        data.msg = "No access to document!";
+        return res.status(404).json(data);
+    }
+
+    if (!data.result.modifiedCount) {
+        data.msg = "User has not access!";
+        return res.status(404).json(data);
+    }
+
+    const result = await req.app.get('db').getAllUsernamesWithAccess(
+        req.user.username, req.body.id);
+
+    data.msg = `User ${req.body.username} access was removed from document ${req.body.id}`;
+    data.access = result[0].docs.access;
     console.log(data);
 
-    res.json(data);
+    res.status(201).json(data);
 });
 
 router.get('/access/:id', async function(req, res) {
-    const result = await database.getAccess(req.user.username, req.params.id);
+    if (!req.params.id) {
+        return res.json();
+    }
 
-    console.log('/access/:id', result);
-
+    const result = await req.app.get('db').getAccess(req.user.username, req.params.id);
+    console.log(req.user.username, req.params.id, result);
     const data = {
-        docs: delete result.docdata
+        docs: result? delete result.docdata : []
     };
 
     res.json(data);

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/0086a098-5a02-48d2-b630-4b5cb33ba4ed/appservices/subscriptions/0086a098-5a02-48d2-b630-4b5cb33ba4ed/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/jsramverk-editor-adpr12",
+    "appService.deploySubpath": "."
+}

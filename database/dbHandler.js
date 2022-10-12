@@ -1,19 +1,31 @@
 const { url, dbName, collectionName } = require(`./config.${process.env.NODE_ENV}`);
-const { MongoClient, ObjectId } = require('mongodb');
-const client = new MongoClient(url);
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const onExit = require('signal-exit');
 
-function toLowerKeys(obj) {
-    return Object.assign(...Object.keys(obj).map(key=>({[key.toLowerCase()]: obj[key]})));
-}
+const client = new MongoClient(url,
+    { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
 async function initConnection() {
-    await client.connect();
+    console.log(url, dbName, collectionName);
+    client.addListener("connectionCreated", event => {
+        console.log(event);
+    });
+    client.addListener("serverHeartbeatFailed", event => {
+        console.log(event);
+    });
+    try {
+        await client.connect();
+        console.log("Database connected!");
+    } catch (err) {
+        console.log("Database connection failed!");
+        console.log(err);
+    }
 }
 
 async function closeConnection() {
     await client.close();
+    console.log("Database connection closed!");
 }
 
 onExit((code, signal) => {
@@ -21,7 +33,6 @@ onExit((code, signal) => {
     closeConnection();
 });
 
-console.log(url, dbName, collectionName);
 
 async function connect(collectionAction) {
     let result = null;
@@ -32,7 +43,6 @@ async function connect(collectionAction) {
         result = await collectionAction(collection);
     } catch (e) {
         console.log(e);
-        throw e;
     } finally {
         //client.close();
         // done when process node process ends
@@ -142,10 +152,11 @@ async function storeAccess(username, docId, accessname) {
         collection => collection.updateOne(
             {
                 'profile.username': username,
-                'docs': {$elemMatch: {id: ObjectId(docId)}}},
+                'docs': {$elemMatch: {id: ObjectId(docId)}}
+            },
             { $addToSet:
-                {  'docs.$.access': accessname } },
-
+                { 'docs.$.access': accessname }
+            },
         ));
 }
 
@@ -159,26 +170,6 @@ async function removeAccess(username, docId, accessname) {
             { $pull: { 'docs.$.access': accessname }}));
 }
 
-// async function storeAccess(username, docId, accessname) {
-//     return await connect(
-//         collection => collection.updateOne(
-//             {
-//                 'profile.username': username
-//             },
-
-//             { $addToSet:
-//                 {  'docs.$.access': accessname }
-//             },
-//             {
-//                 arrayFilters: [
-                    
-//                 ]
-//             },
-//             { 'docs': {$elemMatch: {id:  new ObjectId(docId)}}
-//             },
-
-//         ));
-// }
 
 async function last() {
     return await connect((collection) => collection.find({}).sort({_id: -1}).limit(1).toArray());
@@ -191,10 +182,8 @@ async function remove(data={}) {
 async function allDatabases() {
     // Use connect method to connect to the server
     try {
-        await client.connect();
         const findResult = await client.db().admin().listDatabases();
 
-        client.close();
         return findResult;
     } catch (e) {
         console.log(e);
@@ -202,10 +191,10 @@ async function allDatabases() {
 }
 
 
-initConnection();
+//initConnection();
 
 module.exports = {
     all, allDocs, insertUser, getUser, userExist, store, getDoc, last,
     allDatabases, updateDoc, remove, connect, insertDoc,
-    storeAccess, removeAccess, getAccess, allAccessDocs, getAllUsernamesWithAccess
+    storeAccess, removeAccess, getAccess, allAccessDocs, getAllUsernamesWithAccess, initConnection
 };
